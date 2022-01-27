@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nitotang/go-soap/internal/service"
-	transportHTTP "github.com/nitotang/go-soap/internal/transport/http"
+	"github.com/nitotang/obtener-materiales/internal/service"
+	transportHTTP "github.com/nitotang/obtener-materiales/internal/transport/http"
 )
 
 // App - the struct which contains things like

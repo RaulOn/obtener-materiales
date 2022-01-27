@@ -1,4 +1,4 @@
-module github.com/nitotang/go-soap
+module github.com/nitotang/obtener-materiales
 
 go 1.17
 

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/nitotang/go-soap/internal/soaphandler"
+	"github.com/nitotang/obtener-materiales/internal/soaphandler"
 )
 
 type Service struct{}
