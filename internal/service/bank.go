@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/nitotang/obtener-materiales/internal/soaphandler"
 )
 
@@ -28,8 +30,10 @@ func (s *Service) GetBank(ID string) (Bank, error) {
 	var bank Bank
 	bank.ID = ID
 
+	fmt.Println("ID: " + ID)
+
 	soapRequest := soaphandler.Request{}
-	soapRequest.Blz = bank.ID
+	soapRequest.Codigo = bank.ID
 
 	soapResponse, err := soaphandler.CallSOAPClientSteps(&soapRequest)
 
@@ -37,10 +41,7 @@ func (s *Service) GetBank(ID string) (Bank, error) {
 		return Bank{}, err
 	}
 
-	bank.Name = soapResponse.SoapBody.Resp.Response.Bezeichnung
-	bank.Code = soapResponse.SoapBody.Resp.Response.Bic
-	bank.Address = soapResponse.SoapBody.Resp.Response.Ort
-	bank.PostalCode = soapResponse.SoapBody.Resp.Response.Plz
+	bank.Name = soapResponse.SoapBody.Resp.Result.ResultItem.ResultMessage
 
 	return bank, nil
 }

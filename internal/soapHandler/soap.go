@@ -2,16 +2,74 @@ package soaphandler
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"text/template"
 )
 
 type Request struct {
 	//Values are set in below fields as per the request
-	Blz string
+	Codigo string
+}
+
+type Response struct {
+	XMLName    xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+	SoapHeader *SOAPHeaderResponse
+	SoapBody   *SOAPBodyResponse
+}
+
+type SOAPHeaderResponse struct {
+	XMLName xml.Name `xml:"Header"`
+}
+
+type SOAPBodyResponse struct {
+	XMLName      xml.Name `xml:"Body"`
+	Resp         *GetStockResponseBody
+	FaultDetails *Fault
+}
+
+type Fault struct {
+	XMLName     xml.Name `xml:"Fault"`
+	Faultcode   string   `xml:"faultcode"`
+	Faultstring string   `xml:"faultstring"`
+}
+
+type GetStockResponseBody struct {
+	XMLName xml.Name `xml:"ZSDRFC_SKN_GET_STOCKResponse"`
+	Result  *Return
+	Stock   *Stock
+}
+
+type Return struct {
+	XMLName    xml.Name `xml:"ET_RETURN"`
+	ResultItem *ReturnItem
+}
+
+type ReturnItem struct {
+	XMLName       xml.Name `xml:"item"`
+	Type          string   `xml:"TYPE"`
+	Code          string   `xml:"CODE"`
+	ResultMessage string   `xml:"MESSAGE"`
+	Log_No        string   `xml:"LOG_NO"`
+	LOG_MSG_NO    string   `xml:"LOG_MSG_NO"`
+	MESSAGE_V1    string   `xml:"MESSAGE_V1"`
+	MESSAGE_V2    string   `xml:"MESSAGE_V2"`
+	MESSAGE_V3    string   `xml:"MESSAGE_V3"`
+	MESSAGE_V4    string   `xml:"MESSAGE_V4"`
+}
+
+type Stock struct {
+	XMLName   xml.Name `xml:"ET_STOCK"`
+	StockItem *StockItem
+}
+
+type StockItem struct {
+	XMLName     xml.Name `xml:"item"`
+	Description string   `xml:"ZSD_DCORTA"`
+	Quantity    string   `xml:"ZSD_QSTUCO"`
 }
 
 func generateSOAPRequest(req *Request) (*http.Request, error) {
@@ -38,43 +96,15 @@ func generateSOAPRequest(req *Request) (*http.Request, error) {
 		return nil, err
 	}
 
-	r, err := http.NewRequest(http.MethodPost, "http://www.thomas-bayer.com/axis2/services/BLZService", bytes.NewBuffer(doc.Bytes()))
+	r, err := http.NewRequest(http.MethodPost, "https://servicioswebdex.alicorp.com.pe/nd1/sap/bc/srt/rfc/sap/zsdrfc_skn_get_stock/300/zsdrfc_skn_get_stock/zsdrfc_skn_get_stock", bytes.NewBuffer(doc.Bytes()))
+	r.SetBasicAuth("nrodriguezv", "mikaela2013")
+
 	if err != nil {
 		fmt.Printf("Error making a request. %s ", err.Error())
 		return nil, err
 	}
 
 	return r, nil
-}
-
-type Response struct {
-	XMLName  xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
-	SoapBody *SOAPBodyResponse
-}
-
-type SOAPBodyResponse struct {
-	XMLName      xml.Name `xml:"Body"`
-	Resp         *GetBankResponseBody
-	FaultDetails *Fault
-}
-
-type Fault struct {
-	XMLName     xml.Name `xml:"Fault"`
-	Faultcode   string   `xml:"faultcode"`
-	Faultstring string   `xml:"faultstring"`
-}
-
-type GetBankResponseBody struct {
-	XMLName  xml.Name `xml:"getBankResponse"`
-	Response *Details
-}
-
-type Details struct {
-	XMLName     xml.Name `xml:"details"`
-	Bezeichnung string   `xml:"bezeichnung"`
-	Bic         string   `xml:"bic"`
-	Ort         string   `xml:"ort"`
-	Plz         string   `xml:"plz"`
 }
 
 func CallSOAPClientSteps(req *Request) (*Response, error) {
@@ -94,17 +124,23 @@ func CallSOAPClientSteps(req *Request) (*Response, error) {
 }
 
 func soapCall(req *http.Request) (*Response, error) {
-	client := &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
+	fmt.Println(resp.Body)
 
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
+
 	defer resp.Body.Close()
 
 	r := &Response{}
