@@ -8,7 +8,7 @@ import (
 
 type Service struct{}
 
-type Bank struct {
+type Stock struct {
 	ID         string
 	Name       string
 	Code       string
@@ -16,8 +16,8 @@ type Bank struct {
 	PostalCode string
 }
 
-type BankService interface {
-	GetBank(ID string) (Bank, error)
+type StockService interface {
+	GetStock(ID string) (Stock, error)
 }
 
 // NewService - returns a new comment service
@@ -26,22 +26,18 @@ func NewService() *Service {
 }
 
 // GetComment - retrieves comments by their ID from the database
-func (s *Service) GetBank(ID string) (Bank, error) {
-	var bank Bank
-	bank.ID = ID
+func (s *Service) GetStock(ID string) (*soapHandler.Response, error) {
 
 	fmt.Println("ID: " + ID)
 
 	soapRequest := soapHandler.Request{}
-	soapRequest.Codigo = bank.ID
+	soapRequest.CodigoProducto = ID
 
-	soapResponse, err := soapHandler.CallSOAPClientSteps(&soapRequest)
+	response, err := soapHandler.CallSOAPClientSteps(&soapRequest)
 
 	if err != nil {
-		return Bank{}, err
+		return response, err
 	}
 
-	bank.Name = soapResponse.SoapBody.Resp.Result.ResultItem.ResultMessage
-
-	return bank, nil
+	return response, nil
 }

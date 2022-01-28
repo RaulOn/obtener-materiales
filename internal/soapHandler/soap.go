@@ -12,7 +12,9 @@ import (
 
 type Request struct {
 	//Values are set in below fields as per the request
-	Codigo string
+	CodigoProducto string
+	CodigoSociedad string
+	CodigoSede     string
 }
 
 type Response struct {
@@ -26,7 +28,7 @@ type SOAPHeaderResponse struct {
 }
 
 type SOAPBodyResponse struct {
-	XMLName      xml.Name `xml:"Body"`
+	XMLName      xml.Name `xml:"Body" json:"-"`
 	Resp         *GetStockResponseBody
 	FaultDetails *Fault
 }
@@ -38,20 +40,20 @@ type Fault struct {
 }
 
 type GetStockResponseBody struct {
-	XMLName xml.Name `xml:"ZSDRFC_SKN_GET_STOCKResponse"`
+	XMLName xml.Name `xml:"ZSDRFC_SKN_GET_STOCKResponse" json:"-"`
 	Result  *Return
 	Stock   *Stock
 }
 
 type Return struct {
-	XMLName    xml.Name `xml:"ET_RETURN"`
+	XMLName    xml.Name `xml:"ET_RETURN" json:"Response"`
 	ResultItem *ReturnItem
 }
 
 type ReturnItem struct {
-	XMLName       xml.Name `xml:"item"`
-	Type          string   `xml:"TYPE"`
-	Code          string   `xml:"CODE"`
+	XMLName       xml.Name `xml:"item" json:"item"`
+	Type          string   `xml:"TYPE" json:"type"`
+	Code          string   `xml:"CODE" json:"code"`
 	ResultMessage string   `xml:"MESSAGE"`
 	Log_No        string   `xml:"LOG_NO"`
 	LOG_MSG_NO    string   `xml:"LOG_MSG_NO"`
@@ -99,7 +101,6 @@ func generateSOAPRequest(req *Request) (*http.Request, error) {
 	r, err := http.NewRequest(http.MethodPost, "https://servicioswebdex.alicorp.com.pe/nd1/sap/bc/srt/rfc/sap/zsdrfc_skn_get_stock/300/zsdrfc_skn_get_stock/zsdrfc_skn_get_stock", bytes.NewBuffer(doc.Bytes()))
 	r.SetBasicAuth("nrodriguezv", "mikaela2013")
 	r.Header.Add("Content-Type", "text/xml;charset=UTF-8")
-	r.Header.Add("Accept-Encoding", "gzip,deflate")
 
 	if err != nil {
 		fmt.Printf("Error making a request. %s ", err.Error())

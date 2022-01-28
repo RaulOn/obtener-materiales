@@ -28,7 +28,7 @@ var getTemplate = `
                <FIELDNM>COD_PRODUCTO</FIELDNM>
                <SIGN>I</SIGN>
                <OPTION>EQ</OPTION>
-               <LOW>{{.Codigo}}</LOW>
+               <LOW>{{.CodigoProducto}}</LOW>
                <HIGH></HIGH>
             </item>
          </IT_FILTROS>
