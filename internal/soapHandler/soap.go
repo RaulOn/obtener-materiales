@@ -1,4 +1,4 @@
-package soaphandler
+package soapHandler
 
 import (
 	"bytes"

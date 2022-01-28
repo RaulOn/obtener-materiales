@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/nitotang/obtener-materiales/internal/soaphandler"
+	"github.com/nitotang/obtener-materiales/internal/soapHandler"
 )
 
 type Service struct{}
@@ -32,10 +32,10 @@ func (s *Service) GetBank(ID string) (Bank, error) {
 
 	fmt.Println("ID: " + ID)
 
-	soapRequest := soaphandler.Request{}
+	soapRequest := soapHandler.Request{}
 	soapRequest.Codigo = bank.ID
 
-	soapResponse, err := soaphandler.CallSOAPClientSteps(&soapRequest)
+	soapResponse, err := soapHandler.CallSOAPClientSteps(&soapRequest)
 
 	if err != nil {
 		return Bank{}, err

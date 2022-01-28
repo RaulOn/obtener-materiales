@@ -1,4 +1,4 @@
-package soaphandler
+package soapHandler
 
 var getTemplate = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:sap-com:document:sap:rfc:functions">
