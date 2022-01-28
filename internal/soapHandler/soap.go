@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/xml"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"text/template"
 )
@@ -132,21 +132,24 @@ func soapCall(req *http.Request) (*Response, error) {
 
 	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
-	fmt.Println(resp.StatusCode)
 
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(string(body))
 
 	defer resp.Body.Close()
 
 	r := &Response{}
 	err = xml.Unmarshal(body, &r)
+
+	fmt.Println()
 
 	if err != nil {
 		return nil, err
