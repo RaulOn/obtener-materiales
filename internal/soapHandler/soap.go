@@ -98,6 +98,8 @@ func generateSOAPRequest(req *Request) (*http.Request, error) {
 
 	r, err := http.NewRequest(http.MethodPost, "https://servicioswebdex.alicorp.com.pe/nd1/sap/bc/srt/rfc/sap/zsdrfc_skn_get_stock/300/zsdrfc_skn_get_stock/zsdrfc_skn_get_stock", bytes.NewBuffer(doc.Bytes()))
 	r.SetBasicAuth("nrodriguezv", "mikaela2013")
+	r.Header.Add("Content-Type", "text/xml;charset=UTF-8")
+	r.Header.Add("Accept-Encoding", "gzip,deflate")
 
 	if err != nil {
 		fmt.Printf("Error making a request. %s ", err.Error())
@@ -130,7 +132,7 @@ func soapCall(req *http.Request) (*Response, error) {
 
 	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
-	fmt.Println(resp.Body)
+	fmt.Println(resp.StatusCode)
 
 	if err != nil {
 		return nil, err

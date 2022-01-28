@@ -49,7 +49,7 @@ func (h *Handler) GetBank(w http.ResponseWriter, r *http.Request) {
 
 	comment, err := h.Service.GetBank(id)
 	if err != nil {
-		sendErrorResponse(w, "Error Retrieving Bank By ID", err)
+		sendErrorResponse(w, "Error", err)
 	}
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
