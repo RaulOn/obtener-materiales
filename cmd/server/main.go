@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nitotang/obtener-materiales/internal/service"
-	transportHTTP "github.com/nitotang/obtener-materiales/internal/transport/http"
+	"obtener-materiales/internal/service"
+	transportHTTP "obtener-materiales/internal/transport/http"
 )
 
 // App - the struct which contains things like
@@ -19,7 +19,7 @@ func (app *App) Run() error {
 	handler := transportHTTP.NewHandler(bankService)
 	handler.SetupRoutes()
 
-	if err := http.ListenAndServe(":8080", handler.Router); err != nil {
+	if err := http.ListenAndServe(":19090", handler.Router); err != nil {
 		fmt.Println("Failed to set up server")
 		return err
 	}

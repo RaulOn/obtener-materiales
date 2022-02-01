@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"github.com/nitotang/obtener-materiales/internal/soapHandler"
+	"obtener-materiales/internal/soapHandler"
 )
 
 type Service struct{}

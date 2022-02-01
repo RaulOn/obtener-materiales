@@ -1,4 +1,4 @@
-module github.com/nitotang/obtener-materiales
+module obtener-materiales
 
 go 1.17
 

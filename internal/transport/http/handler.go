@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/nitotang/obtener-materiales/internal/service"
+	"obtener-materiales/internal/service"
 )
 
 // Handler - stores pointer to bank service
